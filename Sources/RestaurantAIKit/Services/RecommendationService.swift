@@ -45,6 +45,30 @@ public final class RecommendationService {
     return candidates.sorted { $0.score > $1.score }.prefix(limit).map { $0 }
   }
 
+  private func matches(intent: Intention, item: MenuItem) -> Bool {
+    let category = item.category.lowercased()
+    let tags = item.tags?.map { $0.lowercased() } ?? []
+
+    // Primary category/topic match
+    if let primary = intent.primary?.lowercased() {
+      var primaryOk = false
+      if category.contains(primary) || tags.contains(primary) {
+        primaryOk = true
+      }
+      if primary == "dessert" {
+        let dessertHints = ["dessert","tatlı","sweet","cake","brownie","tiramisu","cheesecake","sufle","mozaik","pasta"]
+        if dessertHints.contains(where: { category.contains($0) || tags.contains($0) }) {
+          primaryOk = true
+        }
+      }
+      if !primaryOk { return false }
+    }
+
+    // Trait match (if traits specified, require at least one)
+    if intent.traits.isEmpty { return true }
+    return intent.traits.contains(where: { t in tags.contains(t) })
+  }
+
   private func weights(for user: User) -> (flavor: Double, price: Double, rating: Double, distance: Double) {
     let w = user.weights
     return (
