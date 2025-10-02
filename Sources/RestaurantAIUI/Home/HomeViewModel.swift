@@ -24,5 +24,17 @@ public final class HomeViewModel: ObservableObject {
       print("loadNearby error: \(error)")
     }
   }
+
+  public func syncFromGoogle(apiKey: String) async {
+    guard let center else { return }
+    let ingestion = ProviderIngestionService()
+    let api = GooglePlacesProvider(apiKey: apiKey)
+    do {
+      try await ingestion.ingest(api: api, platform: "google", center: center, radiusMeters: radius, limit: 20)
+      loadNearby()
+    } catch {
+      print("google ingest error: \(error)")
+    }
+  }
 }
 
