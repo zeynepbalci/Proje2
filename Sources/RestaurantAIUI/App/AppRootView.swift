@@ -9,13 +9,16 @@ public struct AppRootView: View {
 
   public var body: some View {
     TabView(selection: $selectedTab) {
-      HomeView()
-        .tabItem { Label("Keşfet", systemImage: "map") }
+      NavigationView { HomeView() }
+        .tabItem { Label("Keşfet", systemImage: "list.bullet") }
         .tag(0)
 
-      ChatView()
+      NavigationView { ChatView() }
         .tabItem { Label("Öneri", systemImage: "sparkles") }
         .tag(1)
+    }
+    .task {
+      try? DemoDataSeeder.seedIfNeeded()
     }
   }
 }
