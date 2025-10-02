@@ -11,6 +11,7 @@ public struct ProviderRestaurantDTO: Sendable {
   public let categories: [String]?
   public let isOpen: Bool?
   public let photoURL: String?
+  public let websiteURL: String?
 }
 
 public struct ProviderMenuItemDTO: Sendable {
