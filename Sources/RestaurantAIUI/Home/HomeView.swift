@@ -12,13 +12,7 @@ public struct HomeView: View {
     NavigationView {
       List(vm.restaurants, id: \.id) { r in
         NavigationLink(destination: RestaurantDetailView(restaurant: r)) {
-          VStack(alignment: .leading, spacing: 4) {
-            Text(r.name).font(.headline)
-            HStack(spacing: 12) {
-              Text("⭐️ \(String(format: "%.1f", r.rating))")
-              if r.priceLevel > 0 { Text(String(repeating: "$", count: Int(r.priceLevel))) }
-            }.font(.subheadline).foregroundColor(.secondary)
-          }
+          RestaurantRow(restaurant: r)
         }
       }
       .navigationTitle("Yakındakiler")
