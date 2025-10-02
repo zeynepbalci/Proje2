@@ -8,13 +8,19 @@ let package = Package(
     .macOS(.v12)
   ],
   products: [
-    .library(name: "RestaurantAIKit", targets: ["RestaurantAIKit"])
+    .library(name: "RestaurantAIKit", targets: ["RestaurantAIKit"]),
+    .library(name: "RestaurantAIUI", targets: ["RestaurantAIUI"])
   ],
   targets: [
     .target(
       name: "RestaurantAIKit",
       dependencies: [],
       path: "Sources/RestaurantAIKit"
+    ),
+    .target(
+      name: "RestaurantAIUI",
+      dependencies: ["RestaurantAIKit"],
+      path: "Sources/RestaurantAIUI"
     ),
     .testTarget(
       name: "RestaurantAIKitTests",
