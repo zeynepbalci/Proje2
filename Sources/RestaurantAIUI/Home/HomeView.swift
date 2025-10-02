@@ -20,6 +20,15 @@ public struct HomeView: View {
         vm.center = userLocation
         vm.loadNearby()
       }
+      .toolbar {
+        if let key = ProcessInfo.processInfo.environment["GOOGLE_PLACES_API_KEY"], !key.isEmpty {
+          Button {
+            Task { await vm.syncFromGoogle(apiKey: key) }
+          } label: {
+            Label("Google'dan Çek", systemImage: "arrow.down.circle")
+          }
+        }
+      }
     }
   }
 }

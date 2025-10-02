@@ -3,7 +3,10 @@ import MapKit
 import RestaurantAIKit
 
 public struct HomeMapView: View {
-  @State private var position: MapCameraPosition = .automatic
+  @State private var region = MKCoordinateRegion(
+    center: CLLocationCoordinate2D(latitude: 41.0082, longitude: 28.9784),
+    span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+  )
   public let restaurants: [Restaurant]
 
   public init(restaurants: [Restaurant]) {
@@ -11,22 +14,16 @@ public struct HomeMapView: View {
   }
 
   public var body: some View {
-    Map(position: $position) {
-      ForEach(restaurants, id: \.id) { r in
-        let coord = CLLocationCoordinate2D(latitude: r.latitude, longitude: r.longitude)
-        Annotation(r.name, coordinate: coord) {
-          ZStack {
-            Circle().fill(Color.blue.opacity(0.8)).frame(width: 12, height: 12)
-            Circle().stroke(Color.white, lineWidth: 2).frame(width: 12, height: 12)
-          }
-        }
-      }
+    Map(coordinateRegion: $region, annotationItems: restaurants.map { MapItem(id: $0.id, name: $0.name, lat: $0.latitude, lon: $0.longitude) }) { item in
+      MapMarker(coordinate: CLLocationCoordinate2D(latitude: item.lat, longitude: item.lon), tint: .blue)
     }
     .onAppear {
       if let first = restaurants.first {
-        position = .region(MKCoordinateRegion(center: .init(latitude: first.latitude, longitude: first.longitude), span: .init(latitudeDelta: 0.05, longitudeDelta: 0.05)))
+        region.center = CLLocationCoordinate2D(latitude: first.latitude, longitude: first.longitude)
       }
     }
   }
+
+  struct MapItem: Identifiable { let id: UUID; let name: String; let lat: Double; let lon: Double }
 }
 
